@@ -77,7 +77,9 @@ public class Player : MonoBehaviour
         if (travelledLeft < 0) {
             travelledLeft = 0;
         }
-        text.text = "Time left: " + span.ToString() + "\n" + "Score: " + ((acceleration - 10) * 4).ToString() + "\nCooldown: " + travelledLeft.ToString();
+        text.text = "Time left: " + span.ToString() + "\nScore: " + 
+            ((acceleration - 10) * 4).ToString() + "\nCooldown: " + 
+            travelledLeft.ToString();
     }
 
     void movment() 

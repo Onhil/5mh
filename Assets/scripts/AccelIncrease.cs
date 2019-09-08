@@ -22,6 +22,13 @@ public class AccelIncrease : MonoBehaviour
         if (p.tag == "Player") {
             Player player = p.GetComponent<Player>();
             if (player != null) player.accelIncrease();
+
+            dTileMap destroyabale = gameObject.GetComponent<dTileMap>();
+
+            if (!Equals(destroyabale, null)) {
+                Vector2 grandma = (Vector2)player.transform.position;
+                destroyabale.Destroy(player, grandma);
+            }
         }
     }
 }

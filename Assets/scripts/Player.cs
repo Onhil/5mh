@@ -44,8 +44,11 @@ public class Player : MonoBehaviour
         movment();
         CheckGround();
         
-        if (Input.GetKeyDown(KeyCode.F)) {
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
             acceleration += 5;
+        }
+         if (Input.GetKeyDown(KeyCode.Mouse1)) {
+            acceleration -= 5;
         }
         
     }
@@ -53,6 +56,12 @@ public class Player : MonoBehaviour
     void travel() {
         if (Input.GetKeyDown(KeyCode.E) && !travelled) {
             transform.position = new Vector3(TimeResetX, TimeResetY, 0);
+            GameObject[] move = GameObject.FindGameObjectsWithTag("Dest");
+            foreach (GameObject moved in move) {
+                Debug.Log(moved);
+                moved.GetComponent<destroy>().move();
+            }
+            
             travelled = true;
             travelTime = timeLeft;
             Debug.Log(travelTime);

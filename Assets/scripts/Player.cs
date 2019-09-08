@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    public double jump, acceleration, accelerationIncrease, maxTime;
+    public double jump, acceleration, accelerationIncrease, maxTime, coolDown;
     [SerializeField]
     Transform rayGround;
     Rigidbody2D rigidBody;
@@ -15,6 +15,12 @@ public class Player : MonoBehaviour
     float timeNow;
     Text text;
     bool isGrounded = true;
+    bool travelled = false;
+    float timeLeft;
+    float travelTime;
+    float travelledStart;
+    float travelledNow;
+    float travelledLeft ;
 
     private float TimeResetX, TimeResetY;
 
@@ -34,27 +40,50 @@ public class Player : MonoBehaviour
     {
         timeNow = Time.time - startTime;
         updateTimeLeft();
+        travel();
         movment();
         CheckGround();
-        if (Input.GetKeyDown(KeyCode.E)) {
-            transform.position = new Vector3(TimeResetX, TimeResetY, 0);
-        }
+        
         if (Input.GetKeyDown(KeyCode.F)) {
             acceleration += 5;
         }
         
     }
 
+    void travel() {
+        if (Input.GetKeyDown(KeyCode.E) && !travelled) {
+            transform.position = new Vector3(TimeResetX, TimeResetY, 0);
+            travelled = true;
+            travelTime = timeLeft;
+            Debug.Log(travelTime);
+            travelledStart = Time.time;
+        }
+        
+        
+        if ((travelTime - coolDown) >= timeLeft && travelled) {
+            travelled = false;
+            Debug.Log(timeLeft);
+        }
+    }
+
     void updateTimeLeft() {
-        float timeLeft = (float)maxTime - timeNow;
+        timeLeft = (float)maxTime - timeNow;
         TimeSpan span = TimeSpan.FromSeconds((double)(new decimal(timeLeft)));
-        text.text = span.ToString();
+        if (travelled) {
+            
+            travelledNow = Time.time - travelledStart;
+            travelledLeft = (float)coolDown - travelledNow;
+        }
+        if (travelledLeft < 0) {
+            travelledLeft = 0;
+        }
+        text.text = "Time left: " + span.ToString() + "\n" + "Score: " + ((acceleration - 10) * 4).ToString() + "\nCooldown: " + travelledLeft.ToString();
     }
 
     void movment() 
     {
         double speed = Input.GetAxis("Horizontal") * acceleration;
-
+        
         if (isGrounded && Input.GetButtonDown("Jump")) {
             rigidBody.velocity = Vector2.up * (float)jump;
         } 
